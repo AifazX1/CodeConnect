@@ -21,39 +21,154 @@ st.set_page_config(
 # CUSTOM CSS
 # ============================================================
 
+# ============================================================
+# CUSTOM CSS
+# ============================================================
+
 st.markdown("""
+[data-testid="stMetricLabel"] {
+    color: #4b5563 !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: #111827 !important;
+}
+
+[data-testid="stMetricDelta"] {
+    color: #374151 !important;
+}
 <style>
 
-    /* Main background */
+    /* ========================================================
+       GLOBAL TEXT
+       ======================================================== */
+
     .stApp {
         background-color: #f7f8fc;
+        color: #111827 !important;
     }
 
-    /* Sidebar */
+    /* Force normal text to be dark */
+    .stApp p,
+    .stApp span,
+    .stApp label,
+    .stApp div {
+        color: #111827;
+    }
+
+    /* ========================================================
+       HEADINGS
+       ======================================================== */
+
+    .stApp h1 {
+        color: #111827 !important;
+        font-weight: 800 !important;
+    }
+
+    .stApp h2 {
+        color: #111827 !important;
+        font-weight: 750 !important;
+    }
+
+    .stApp h3 {
+        color: #111827 !important;
+        font-weight: 700 !important;
+    }
+
+    .stApp h4 {
+        color: #111827 !important;
+        font-weight: 650 !important;
+    }
+
+    /* ========================================================
+       SIDEBAR
+       ======================================================== */
+
     section[data-testid="stSidebar"] {
-        background-color: #111827;
+        background-color: #111827 !important;
     }
 
     section[data-testid="stSidebar"] * {
-        color: white !important;
+        color: #ffffff !important;
     }
 
-    /* Main title */
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] div {
+        color: #ffffff !important;
+    }
+
+    /* ========================================================
+       SIDEBAR RADIO / NAVIGATION
+       ======================================================== */
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label {
+        color: #ffffff !important;
+    }
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label p {
+        color: #ffffff !important;
+    }
+
+    /* ========================================================
+       INPUT FIELDS
+       ======================================================== */
+
+    .stTextInput label,
+    .stNumberInput label,
+    .stSelectbox label,
+    .stTextArea label,
+    .stDateInput label,
+    .stCheckbox label {
+        color: #111827 !important;
+        font-weight: 600 !important;
+    }
+
+    .stTextInput input,
+    .stNumberInput input,
+    .stTextArea textarea {
+        color: #111827 !important;
+        background-color: #ffffff !important;
+    }
+
+    /* Selectbox text */
+    .stSelectbox div[data-baseweb="select"] {
+        color: #111827 !important;
+        background-color: #ffffff !important;
+    }
+
+    /* ========================================================
+       MAIN TITLES
+       ======================================================== */
+
     .main-title {
+        color: #111827 !important;
         font-size: 2.4rem;
         font-weight: 800;
         margin-bottom: 0;
     }
 
     .subtitle {
-        color: #6b7280;
+        color: #4b5563 !important;
         font-size: 1rem;
         margin-top: 0;
     }
 
-    /* Cards */
+    .section-title {
+        color: #111827 !important;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    /* ========================================================
+       METRIC CARDS
+       ======================================================== */
+
     .metric-card {
-        background: white;
+        background: #ffffff;
         padding: 22px;
         border-radius: 14px;
         border: 1px solid #e5e7eb;
@@ -61,36 +176,80 @@ st.markdown("""
     }
 
     .metric-title {
-        color: #6b7280;
+        color: #4b5563 !important;
         font-size: 0.9rem;
         margin-bottom: 8px;
     }
 
     .metric-value {
+        color: #111827 !important;
         font-size: 2rem;
         font-weight: 750;
     }
 
-    /* Login */
+    /* ========================================================
+       DATAFRAMES / TABLES
+       ======================================================== */
+
+    [data-testid="stDataFrame"] {
+        color: #111827 !important;
+    }
+
+    /* ========================================================
+       BUTTONS
+       ======================================================== */
+
+    .stButton button {
+        font-weight: 600 !important;
+    }
+
+    /* ========================================================
+       LOGIN BOX
+       ======================================================== */
+
     .login-box {
         max-width: 450px;
         margin: 60px auto;
-        background: white;
+        background: #ffffff;
         padding: 40px;
         border-radius: 18px;
         border: 1px solid #e5e7eb;
         box-shadow: 0 8px 30px rgba(0,0,0,0.06);
     }
 
-    /* Section headings */
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-top: 10px;
-        margin-bottom: 5px;
+    /* ========================================================
+       EXPANDERS
+       ======================================================== */
+
+    [data-testid="stExpander"] {
+        background-color: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
     }
 
-    /* Hide Streamlit decoration */
+    [data-testid="stExpander"] summary {
+        color: #111827 !important;
+    }
+
+    /* ========================================================
+       ALERTS
+       ======================================================== */
+
+    [data-testid="stAlert"] p {
+        color: inherit !important;
+    }
+
+    /* ========================================================
+       DIVIDERS
+       ======================================================== */
+
+    hr {
+        border-color: #e5e7eb !important;
+    }
+
+    /* ========================================================
+       HIDE STREAMLIT DECORATION
+       ======================================================== */
+
     #MainMenu {
         visibility: hidden;
     }
@@ -101,7 +260,6 @@ st.markdown("""
 
 </style>
 """, unsafe_allow_html=True)
-
 
 # ============================================================
 # SUPABASE CONNECTION
