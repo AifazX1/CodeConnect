@@ -1908,6 +1908,7 @@ with st.sidebar:
             "🏠 Dashboard",
             "👨‍🎓 Register Student",
             "📋 Student Records",
+            "🏫 Schools",
             "📅 Attendance",
             "📊 Reports"
         ]
@@ -1946,10 +1947,8 @@ elif page == "📋 Student Records":
 
 elif page == "🏫 Schools":
 
-    if st.session_state.user_role == "admin":
-        schools_page()
-    else:
-        st.error("Administrator access is required for the Schools section.")
+    # Both Administrators and Users can add/view schools.
+    schools_page()
 
 elif page == "💻 Coding Sessions":
 
