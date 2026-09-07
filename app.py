@@ -823,10 +823,17 @@ def register_student():
 
                     # Generate registration ID
                     existing_students = get_students()
+                    used_numbers = []
+                    for student in existing_students:
+                        reg_id = str(student.get("registration_id", ""))
+                        if reg_id.startswith("CC"):
+                            try:
+                                used_numbers.append(int(reg_id[2:]))
+                            except ValueError:
+                                pass
 
-                    registration_id = (
-                        f"CC{len(existing_students) + 1:03d}"
-                    )
+                    next_number = max(used_numbers, default=0) + 1
+                    registration_id = f"CC{next_number:03d}"
 
                     supabase.table("students").insert(
                         {
