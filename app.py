@@ -296,6 +296,12 @@ if "logged_in" not in st.session_state:
 if "user_email" not in st.session_state:
     st.session_state.user_email = None
 
+if "user_role" not in st.session_state:
+    st.session_state.user_role = None
+
+if "login_name" not in st.session_state:
+    st.session_state.login_name = None
+
 
 # ============================================================
 # LOGIN
@@ -314,18 +320,39 @@ def login_screen():
 
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    st.markdown("### 🔐 Administrator Login")
-
-    email = st.text_input(
-        "Email",
-        placeholder="admin@example.com"
+    login_type = st.radio(
+        "Login as",
+        ["Administrator", "User"],
+        horizontal=True
     )
 
-    password = st.text_input(
-        "Password",
-        type="password",
-        placeholder="Enter your password"
-    )
+    if login_type == "Administrator":
+        st.markdown("### 🔐 Administrator Login")
+
+        username = st.text_input(
+            "Email",
+            placeholder="admin@example.com"
+        )
+
+        password = st.text_input(
+            "Password",
+            type="password",
+            placeholder="Enter your password"
+        )
+
+    else:
+        st.markdown("### 👤 User Login")
+
+        username = st.text_input(
+            "Username",
+            placeholder="User"
+        )
+
+        password = st.text_input(
+            "Passkey",
+            type="password",
+            placeholder="Enter your passkey"
+        )
 
     login_button = st.button(
         "Login",
@@ -335,32 +362,45 @@ def login_screen():
 
     if login_button:
 
-        if not email or not password:
+        if not username or not password:
+            st.warning("Please enter your login credentials.")
 
-            st.warning("Please enter your email and password.")
+        elif login_type == "User":
+
+            # Default user credentials requested by the project.
+            # Change these before production deployment.
+            if username.strip() == "User" and password == "user123":
+                st.session_state.logged_in = True
+                st.session_state.user_role = "user"
+                st.session_state.login_name = "User"
+                st.session_state.user_email = "User"
+
+                st.success("User login successful!")
+                st.rerun()
+
+            else:
+                st.error("Invalid username or passkey.")
 
         else:
 
             try:
-
                 response = supabase.auth.sign_in_with_password(
                     {
-                        "email": email,
+                        "email": username,
                         "password": password
                     }
                 )
 
                 if response.user:
-
                     st.session_state.logged_in = True
+                    st.session_state.user_role = "admin"
+                    st.session_state.login_name = response.user.email
                     st.session_state.user_email = response.user.email
 
-                    st.success("Login successful!")
-
+                    st.success("Administrator login successful!")
                     st.rerun()
 
-            except Exception as e:
-
+            except Exception:
                 st.error("Invalid email or password.")
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -386,6 +426,8 @@ def logout():
 
     st.session_state.logged_in = False
     st.session_state.user_email = None
+    st.session_state.user_role = None
+    st.session_state.login_name = None
 
     st.rerun()
 
@@ -797,7 +839,8 @@ def register_student():
                             "parent_name": parent_name.strip(),
                             "contact": contact.strip(),
                             "coding_level": coding_level,
-                            "session_attended": session_attended
+                            "session_attended": session_attended,
+                            "created_by": st.session_state.get("login_name", "Unknown")
                         }
                     ).execute()
 
@@ -906,6 +949,7 @@ def student_database():
                 "School": school_name,
                 "Class": student.get("class_name"),
                 "Coding Level": student.get("coding_level"),
+                "Created By": student.get("created_by") or "Unknown",
                 "Attended": (
                     "Yes"
                     if student.get("session_attended")
@@ -1838,7 +1882,10 @@ with st.sidebar:
             <span style='font-size:12px;color:#9ca3af !important;'>
                 SIGNED IN AS
             </span><br>
-            <b>{st.session_state.user_email}</b>
+            <b>{st.session_state.login_name or st.session_state.user_email}</b><br>
+            <span style='font-size:11px;color:#d1d5db !important;'>
+                {'Administrator' if st.session_state.user_role == 'admin' else 'User'}
+            </span>
         </div>
         """,
         unsafe_allow_html=True
@@ -1846,9 +1893,8 @@ with st.sidebar:
 
     st.divider()
 
-    page = st.radio(
-        "Navigation",
-        [
+    if st.session_state.user_role == "admin":
+        navigation_options = [
             "🏠 Dashboard",
             "👨‍🎓 Register Student",
             "📋 Student Records",
@@ -1856,7 +1902,19 @@ with st.sidebar:
             "💻 Coding Sessions",
             "📅 Attendance",
             "📊 Reports"
-        ],
+        ]
+    else:
+        navigation_options = [
+            "🏠 Dashboard",
+            "👨‍🎓 Register Student",
+            "📋 Student Records",
+            "📅 Attendance",
+            "📊 Reports"
+        ]
+
+    page = st.radio(
+        "Navigation",
+        navigation_options,
         label_visibility="collapsed"
     )
 
@@ -1888,11 +1946,17 @@ elif page == "📋 Student Records":
 
 elif page == "🏫 Schools":
 
-    schools_page()
+    if st.session_state.user_role == "admin":
+        schools_page()
+    else:
+        st.error("Administrator access is required for the Schools section.")
 
 elif page == "💻 Coding Sessions":
 
-    sessions_page()
+    if st.session_state.user_role == "admin":
+        sessions_page()
+    else:
+        st.error("Administrator access is required for the Coding Sessions section.")
 
 elif page == "📅 Attendance":
 
